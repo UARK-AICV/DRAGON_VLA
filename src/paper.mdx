@@ -76,10 +76,8 @@ import Carousel from "./components/Carousel.astro";
 import CarouselSlide from "./components/CarouselSlide.astro";
 import { Comparison } from "./components/Comparison.tsx";
 
-const base = import.meta.env.BASE_URL;
-
 <Video
-  src={`${base}supplementary_work_summary.mp4`}
+  src="supplementary_work_summary.mp4"
   autoplay={false}
   controls
   fullWidth
@@ -133,7 +131,7 @@ We take synchronized base- and wrist-view RGB observations and first run a real-
       fullWidth
       leftLabel="Original Observations"
       rightLabel="Perceptually Grounded Observations"
-      src={`${base}qualitative/ours_ID_obj1_side_by_side.mp4`}
+        src="qualitative/ours_ID_obj1_side_by_side.mp4"
     />
     <p class="mt-2 text-center text-base">''place coffee bag in the bin''</p>
   </CarouselSlide>
@@ -142,7 +140,7 @@ We take synchronized base- and wrist-view RGB observations and first run a real-
       fullWidth
       leftLabel="Original Observations"
       rightLabel="Perceptually Grounded Observations"
-      src={`${base}qualitative/ours_ID_obj2_side_by_side.mp4`}
+        src="qualitative/ours_ID_obj2_side_by_side.mp4"
     />
     <p class="mt-2 text-center text-base">''place mayonnaise bottle in the bin''</p>
   </CarouselSlide>
@@ -151,7 +149,7 @@ We take synchronized base- and wrist-view RGB observations and first run a real-
       fullWidth
       leftLabel="Original Observations"
       rightLabel="Perceptually Grounded Observations"
-      src={`${base}qualitative/ours_ID_obj3_side_by_side.mp4`}
+        src="qualitative/ours_ID_obj3_side_by_side.mp4"
     />
     <p class="mt-2 text-center text-base">''place olive oil bottle in the bin''</p>
   </CarouselSlide>
@@ -160,7 +158,7 @@ We take synchronized base- and wrist-view RGB observations and first run a real-
       fullWidth
       leftLabel="Original Observations"
       rightLabel="Perceptually Grounded Observations"
-      src={`${base}qualitative/ours_ID_obj4_side_by_side.mp4`}
+        src="qualitative/ours_ID_obj4_side_by_side.mp4"
     />
     <p class="mt-2 text-center text-base">''place ketchup bottle in the bin''</p>
   </CarouselSlide>
@@ -169,7 +167,7 @@ We take synchronized base- and wrist-view RGB observations and first run a real-
       fullWidth
       leftLabel="Original Observations"
       rightLabel="Perceptually Grounded Observations"
-      src={`${base}qualitative/ours_ID_obj5_side_by_side.mp4`}
+        src="qualitative/ours_ID_obj5_side_by_side.mp4"
     />
     <p class="mt-2 text-center text-base">''place mustard bottle in the bin''</p>
   </CarouselSlide>
@@ -200,7 +198,7 @@ OBEYED-VLA consistently maintains attention on the instructed target even with 1
         maxWidthClass="max-w-full"
         leftLabel="Original Observations"
         rightLabel="Perceptually Grounded Observations"
-        src={`${base}qualitative/ours_spatial_left_side_by_side.mp4`}
+        src="qualitative/ours_spatial_left_side_by_side.mp4"
       />
       <p class="text-center text-sm">''place object on the left in the bin''</p>
     </div>
@@ -210,7 +208,7 @@ OBEYED-VLA consistently maintains attention on the instructed target even with 1
         maxWidthClass="max-w-full"
         leftLabel="Original Observations"
         rightLabel="Perceptually Grounded Observations"
-        src={`${base}qualitative/ours_spatial_middle_side_by_side.mp4`}
+        src="qualitative/ours_spatial_middle_side_by_side.mp4"
       />
       <p class="text-center text-sm">''place object in the middle in the bin''</p>
     </div>
@@ -220,7 +218,7 @@ OBEYED-VLA consistently maintains attention on the instructed target even with 1
         maxWidthClass="max-w-full"
         leftLabel="Original Observations"
         rightLabel="Perceptually Grounded Observations"
-        src={`${base}qualitative/ours_spatial_right_side_by_side.mp4`}
+        src="qualitative/ours_spatial_right_side_by_side.mp4"
       />
       <p class="text-center text-sm">''place object on the right in the bin''</p>
     </div>
@@ -246,7 +244,7 @@ With purely relational prompts (“left/middle/right”), OBEYED-VLA’s cross-v
     fullWidth
     leftLabel="Original Observations"
     rightLabel="Perceptually Grounded Observations"
-    src={`${base}qualitative/ours_absent_obj_side_by_side.mp4`}
+    src="qualitative/ours_absent_obj_side_by_side.mp4"
   />
   <p class="text-center text-base">''pick up the mustard bottle and place it in the bin''</p>
 </div>
@@ -270,7 +268,7 @@ When the instruction is infeasible (target missing), OBEYED-VLA almost always ab
     fullWidth
     leftLabel="Original Observations"
     rightLabel="Perceptually Grounded Observations"
-    src={`${base}qualitative/ours_bg_change_side_by_side.mp4`}
+    src="qualitative/ours_bg_change_side_by_side.mp4"
   />
   <p class="text-center text-base">''place the instructed item despite background shift''</p>
 </div>
@@ -297,7 +295,7 @@ Swapping tablecloths, backdrops, or both barely dents OBEYED-VLA, while baseline
           fullWidth
           leftLabel="Original Observations"
           rightLabel="Perceptually Grounded Observations"
-          src={`${base}qualitative/ours_unseen_obj1_side_by_side.mp4`}
+          src="qualitative/ours_unseen_obj1_side_by_side.mp4"
         />
         <p class="mt-2 text-center text-base">''place the white bottle in the bin''</p>
       </CarouselSlide>
@@ -306,7 +304,7 @@ Swapping tablecloths, backdrops, or both barely dents OBEYED-VLA, while baseline
           fullWidth
           leftLabel="Original Observations"
           rightLabel="Perceptually Grounded Observations"
-          src={`${base}qualitative/ours_unseen_obj2_side_by_side.mp4`}
+          src="qualitative/ours_unseen_obj2_side_by_side.mp4"
         />
         <p class="mt-2 text-center text-base">''place the orange coffee bag in the bin''</p>
       </CarouselSlide>
@@ -315,7 +313,7 @@ Swapping tablecloths, backdrops, or both barely dents OBEYED-VLA, while baseline
           fullWidth
           leftLabel="Original Observations"
           rightLabel="Perceptually Grounded Observations"
-          src={`${base}qualitative/ours_unseen_obj3_side_by_side.mp4`}
+          src="qualitative/ours_unseen_obj3_side_by_side.mp4"
         />
         <p class="mt-2 text-center text-base">''place the yellow oil bottle in the bin''</p>
       </CarouselSlide>
@@ -324,7 +322,7 @@ Swapping tablecloths, backdrops, or both barely dents OBEYED-VLA, while baseline
           fullWidth
           leftLabel="Original Observations"
           rightLabel="Perceptually Grounded Observations"
-          src={`${base}qualitative/ours_unseen_obj4_side_by_side.mp4`}
+          src="qualitative/ours_unseen_obj4_side_by_side.mp4"
         />
         <p class="mt-2 text-center text-base">''place the hoisin sauce bottle in the bin''</p>
       </CarouselSlide>
@@ -333,7 +331,7 @@ Swapping tablecloths, backdrops, or both barely dents OBEYED-VLA, while baseline
           fullWidth
           leftLabel="Original Observations"
           rightLabel="Perceptually Grounded Observations"
-          src={`${base}qualitative/ours_unseen_obj5_side_by_side.mp4`}
+          src="qualitative/ours_unseen_obj5_side_by_side.mp4"
         />
         <p class="mt-2 text-center text-base">''place the relish bottle in the bin''</p>
       </CarouselSlide>
