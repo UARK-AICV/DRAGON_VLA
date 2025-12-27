@@ -1,24 +1,48 @@
 ---
-title: Research Project Page Template
+title: "Clutter-Resistant Vision–Language–Action Models through Object-Centric and Geometry Grounding"
 authors:
-  - name: Roman Hauksson
-    url: https://roman.technology
-    institution: University of Texas at Dallas
-    notes: ["*", †]
-  - name: Author Two
-    institution: Institution Two
-    notes: ["*", †]
-  - name: Author Three
-    institution: Institution Three
-    notes: ["*"]
-  - name: Author Four
-    institution: Institution Four
-conference: Conference Name
+  - name: Khoa Vo
+    url: https://vhvkhoa.github.io
+    notes: ["1"]
+  - name: Taisei Hanyu
+    url: https://thanyu-hub.github.io/
+    notes: ["1"]
+  - name: Yuki Ikebe
+    notes: ["1"]
+  - name: Trong Thang Pham
+    url: https://phamtrongthang123.github.io/
+    notes: ["1"]
+  - name: Nhat Chung
+    notes: ["2"]
+  - name: Minh Nhat Vu
+    notes: ["3"]
+  - name: Duy Nguyen Ho Minh
+    url: https://duyhominhnguyen.github.io/
+    notes: ["4"]
+  - name: Anh Nguyen
+    url: https://www.csc.liv.ac.uk/~anguyen/
+    notes: ["5"]
+  - name: Anthony Gunderman
+    url: https://mavericklab.uark.edu/
+    notes: ["1"]
+  - name: Chase Rainwater
+    url: https://engineering.uark.edu/industrial-engineering/faculty/uid/cer/name/Chase+Rainwater/
+    notes: ["1"]
+  - name: Ngan Le
+    url: https://uark-aicv.github.io/
+    notes: ["1"]
+conference:
 notes:
-  - symbol: "*"
-    text: author note one
-  - symbol: †
-    text: author note two
+  - symbol: "1"
+    text: University of Arkansas
+  - symbol: "2"
+    text: National University of Singapore
+  - symbol: "3"
+    text: TU Wien
+  - symbol: "4"
+    text: University of Stuttgart
+  - symbol: "5"
+    text: University of Liverpool
 links:
   - name: Paper
     url: https://github.com/RomanHauksson/academic-project-astro-template
@@ -31,7 +55,7 @@ links:
     icon: academicons:arxiv
 
 # The color theme of the page. Defaults to "device" (the preference set in the user's brower or operating system). Setting this to "light" or "dark" will override the user's preference. This is useful if your figures only look good in one theme.
-theme: device
+theme: light
 
 # This is the icon that appears in the user's browser tab. To customize, change the favicon.svg file in /public/, or add your own file to /public/ and change the filename here.
 favicon: favicon.svg
@@ -42,7 +66,6 @@ thumbnail: screenshot-light.png
 ---
 
 import Video from "./components/Video.astro";
-import HighlightedSection from "./components/HighlightedSection.astro";
 import SmallCaps from "./components/SmallCaps.astro";
 import Figure from "./components/Figure.astro";
 import Picture from "./components/Picture.astro";
@@ -53,109 +76,290 @@ import Carousel from "./components/Carousel.astro";
 import CarouselSlide from "./components/CarouselSlide.astro";
 import { Comparison } from "./components/Comparison.tsx";
 
-import outside from "./assets/outside.mp4";
-import transformer from "./assets/transformer.webp";
-import dogsDiffc from "./assets/dogs-diffc.png"
-import dogsTrue from "./assets/dogs-true.png"
+<Video
+  src="/supplementary_work_summary.mp4"
+  autoplay={false}
+  controls
+  fullWidth
+  maxWidthClass="max-w-full"
+/>
 
-<Video src={outside} />
-
-<HighlightedSection>
+<div class="rounded-xl border border-zinc-200 bg-white/70 px-5 py-4 shadow-sm ring-1 ring-zinc-100 dark:border-zinc-700 dark:bg-zinc-900/70 dark:ring-zinc-800">
+  <h2 class="mb-2 text-xl font-semibold">TL;DR</h2>
+  <ul class="list-disc space-y-1 pl-5 text-justify">
+    <li><strong>Problem:</strong> End-to-end VLAs often lose reliable language–vision grounding in real clutter (distractors, absent targets, background shifts, unseen objects).</li>
+    <li><strong>Idea:</strong> OBEYED-VLA decouples perception from control using frozen VLM-based object-centric grounding plus masked-depth geometric grounding, then fine-tunes a VLA only on clean single-object demos.</li>
+    <li><strong>Results:</strong> In real-world scenarios, OBEYED-VLA boosts success across clutter, absent-target, OOD backgrounds, and unseen-object scenes; ablations confirm both semantic grounding and depth cues are key contributors.</li>
+  </ul>
+</div>
 
 ## Abstract
 
-This is a live demo for a template you can use to create a simple project page for your research paper. See the code for the template and instructions on how to use it yourself [here](https://github.com/RomanHauksson/academic-project-astro-template). It's made with the [Astro web framework](https://astro.build/) and styled with [Tailwind](https://tailwindcss.com/). You write the content in [MDX](https://mdxjs.com/), which enables markdown formatting like **bold**, _italics_, and ~strikethrough~, as well as custom components like <SmallCaps>small caps.</SmallCaps>
+<div class="text-justify space-y-4">
 
-</HighlightedSection>
+Recent Vision–Language–Action (VLA) models make strong gains by post-training large Vision–Language Models for action prediction, but most treat perception and control as a single monolithic pipeline optimized purely for action. This end-to-end setup erodes language-conditioned visual grounding: in real-world trials, policies over-grasp when the target is absent, get distracted by clutter, and overfit to background appearance, degrading performance on realistic tabletops with distractors, background shifts, and unseen objects.
 
-## Figures
+We propose OBEYED-VLA (OBject-centric and gEometrY groundED VLA), which explicitly disentangles perceptual grounding from action reasoning. Instead of operating on raw RGB, OBEYED-VLA augments VLAs with a perception module that grounds multi-view inputs into task-conditioned, object-centric, geometry-aware observations. A VLM-based object-centric grounding stage selects task-relevant regions across camera views, and a complementary geometric grounding stage emphasizes the 3D structure of these objects over appearance. The grounded views feed a pretrained VLA policy that we fine-tune only on single-object demonstrations captured without clutter or non-target objects.
 
-Use the figure component to display images, videos, equations, or any other element, with an optional caption.
+On a real-world UR10e tabletop, OBEYED-VLA markedly improves robustness over strong VLA baselines across four challenging regimes and multiple difficulty levels: distractor objects, absent-target rejection, background appearance shifts, and cluttered manipulation of unseen objects. Ablations show both semantic and geometry-aware grounding are critical. Making perception an explicit, object-centric component strengthens and generalizes VLA-based robotic manipulation.
 
-<Figure>
-  <Picture slot="figure" src={transformer} alt="Diagram of the transformer deep learning architecture." invertInDarkMode />
-  <Fragment slot="caption">Diagram of the transformer deep learning architecture.</Fragment>
-</Figure>
+</div>
 
-If you stored your figures as PDFs, the `Picture` component can convert them into web-friendly images automatically.
+## Approach
 
 <Figure>
-  <Picture slot="figure" src="../assets/allstate-sparsity.pdf" alt="Impact of the sparsity-aware algorithm in XGBoost on the Allstate-10K dataset." invertInDarkMode />
-  <Fragment slot="caption">Impact of the sparsity-aware algorithm in [XGBoost](https://arxiv.org/abs/1603.02754) on the Allstate-10K dataset.</Fragment>
+  <Picture
+    slot="figure"
+    src="../assets/architecture.pdf"
+    alt="OBEYED-VLA architecture showing perception grounding and action policy."
+  />
 </Figure>
 
-Use the `Comparison` component to compare two elements with an interactive slider. It should work for any component or HTML element, including images, videos, and 3D models.
+<div class="text-justify space-y-4">
+We take synchronized base- and wrist-view RGB observations and first run a real-time segmentation model to obtain object-level mask proposals in each view. Using set-of-mark prompting, a VLM parses the instruction, selects the task-relevant masks in the base view, and then matches those objects to the corresponding wrist-view regions via reference-crop–conditioned cross-view grounding. We use the selected masks to suppress all irrelevant pixels, producing object-centric views that retain only instruction-relevant objects (and the bin/robot as needed). Next, we estimate depth from each view and apply the same masks to form geometry-focused (masked-depth) observations that emphasize 3D structure while discarding appearance cues. These perceptually grounded views, together with the language instruction and proprioception, are fed into a pretrained VLA backbone that we fine-tune on clean single-object demonstrations while keeping the grounding modules frozen.
 
-<Figure>
-  <Comparison slot="figure" client:idle >
-    <Picture slot="itemOne" src={dogsDiffc} alt="Photo of two dogs running side-by-side in shallow water, lossily compressed using the DiffC algorithm" />
-    <Picture slot="itemTwo" src={dogsTrue} alt="Photo of two dogs running side-by-side in shallow water" />
-  </Comparison>
-  <Fragment slot="caption">A photo of two dogs running side-by-side in shallow water, lossily compressed using the [DiffC algorithm](https://jeremyiv.github.io/diffc-project-page/).</Fragment>
-</Figure>
+</div>
 
-## Carousels
 
-Carousels are useful for situations in which you'd like to display a collection of visuals without taking up much space and you're okay with the reader not seeing every visual. I created my own carousel component for this template because I wasn't satisfied with the existing carousel libraries; please [file an issue](https://github.com/RomanHauksson/academic-project-astro-template/issues/new) if you run into any bugs!
+## Experiments
 
-<Carousel>
+### Cluttered Scenes with Distractor Objects
+
+<Carousel slideGap="0.1rem">
   <CarouselSlide>
-    <Picture src={dogsTrue} alt="Photo of two dogs running side-by-side in shallow water" />
+    <Video
+      fullWidth
+      leftLabel="Original Observations"
+      rightLabel="Perceptually Grounded Observations"
+      src="/qualitative/ours_ID_obj1_side_by_side.mp4"
+    />
+    <p class="mt-2 text-center text-base">''place coffee bag in the bin''</p>
   </CarouselSlide>
   <CarouselSlide>
-    <Picture src={dogsDiffc} alt="Photo of two dogs running side-by-side in shallow water, lossily compressed using the DiffC algorithm" />
+    <Video
+      fullWidth
+      leftLabel="Original Observations"
+      rightLabel="Perceptually Grounded Observations"
+      src="/qualitative/ours_ID_obj2_side_by_side.mp4"
+    />
+    <p class="mt-2 text-center text-base">''place mayonnaise bottle in the bin''</p>
   </CarouselSlide>
   <CarouselSlide>
-    You can put any element in each carousel slide, not just pictures. Since this text isn't part of a component, it will be _interpreted_ as **Markdown**.
+    <Video
+      fullWidth
+      leftLabel="Original Observations"
+      rightLabel="Perceptually Grounded Observations"
+      src="/qualitative/ours_ID_obj3_side_by_side.mp4"
+    />
+    <p class="mt-2 text-center text-base">''place olive oil bottle in the bin''</p>
   </CarouselSlide>
   <CarouselSlide>
-    <Picture src={dogsTrue} alt="Photo of two dogs running side-by-side in shallow water" />
+    <Video
+      fullWidth
+      leftLabel="Original Observations"
+      rightLabel="Perceptually Grounded Observations"
+      src="/qualitative/ours_ID_obj4_side_by_side.mp4"
+    />
+    <p class="mt-2 text-center text-base">''place ketchup bottle in the bin''</p>
+  </CarouselSlide>
+  <CarouselSlide>
+    <Video
+      fullWidth
+      leftLabel="Original Observations"
+      rightLabel="Perceptually Grounded Observations"
+      src="/qualitative/ours_ID_obj5_side_by_side.mp4"
+    />
+    <p class="mt-2 text-center text-base">''place mustard bottle in the bin''</p>
   </CarouselSlide>
 </Carousel>
 
-## Two columns
+<Figure>
+  <Picture
+    slot="figure"
+    src="../assets/plot_id_distractors.pdf"
+    alt="Comparison of performance in cluttered scenes with distractors."
+    maxHeightClass="max-h-[18rem] object-contain"
+  />
+</Figure>
 
-Use the two columns component to display two columns of content. In this example, the first column contains a figure with a YouTube video and the second column contains a figure with an interactive 3D model viewer. By default, they display side by side, but if the screen is narrow enough (for example, on mobile), they're arranged vertically.
+<div class="text-justify">
+OBEYED-VLA consistently maintains attention on the instructed target even with 1 to 7 distractors, whereas end-to-end VLA baselines are often diverted to task-irrelevant objects and degrade sharply as clutter increases. With object- and geometry-grounded inputs, OBEYED-VLA sustains roughly 80 to 90 percent success under heavy clutter, indicating that explicit perceptual grounding is the key driver of reliable language following rather than additional action-centric tuning.
+</div>
 
-<TwoColumns>
-  <Figure slot="left">
-    <YouTubeVideo slot="figure" videoId="wjZofJX0v4M" />
-    <Fragment slot="caption">Take a look at this YouTube video.</Fragment>
-  </Figure>
-  <Figure slot="right">
-    <ModelViewer slot="figure" src="/BoxVertexColors.glb" alt="A cube colored with a rainbow gradient" />
-    <Fragment slot="caption">Now look at this cube, rendered with the `<model-viewer>` web component.</Fragment>
-  </Figure>
-</TwoColumns>
+### Spatial Reasoning
 
-## $\LaTeX$
+<div class="full-bleed flex justify-center">
+  <div
+    class="not-prose grid gap-4 md:grid-cols-3"
+    style="width: calc(1.25 * var(--actual-text-width)); max-width: calc(1.25 * var(--maximum-text-width)); margin-inline: auto; justify-items: center;">
+    <div class="flex flex-col items-center space-y-2">
+      <Video
+        fullWidth
+        maxWidthClass="max-w-full"
+        leftLabel="Original Observations"
+        rightLabel="Perceptually Grounded Observations"
+        src="/qualitative/ours_spatial_left_side_by_side.mp4"
+      />
+      <p class="text-center text-sm">''place object on the left in the bin''</p>
+    </div>
+    <div class="flex flex-col items-center space-y-2">
+      <Video
+        fullWidth
+        maxWidthClass="max-w-full"
+        leftLabel="Original Observations"
+        rightLabel="Perceptually Grounded Observations"
+        src="/qualitative/ours_spatial_middle_side_by_side.mp4"
+      />
+      <p class="text-center text-sm">''place object in the middle in the bin''</p>
+    </div>
+    <div class="flex flex-col items-center space-y-2">
+      <Video
+        fullWidth
+        maxWidthClass="max-w-full"
+        leftLabel="Original Observations"
+        rightLabel="Perceptually Grounded Observations"
+        src="/qualitative/ours_spatial_right_side_by_side.mp4"
+      />
+      <p class="text-center text-sm">''place object on the right in the bin''</p>
+    </div>
+  </div>
+</div>
 
-You can also add $\LaTeX$ formulas, rendered during the build process using [$\KaTeX$](https://katex.org/) so they're quick to load for visitors of your project page. You can write them inline, like this: $a^2 + b^2 = c^2$. Or, you can write them as a block:
+<Figure>
+  <Picture
+    slot="figure"
+    src="../assets/fig_absent_spatial_bars.pdf"
+    alt="Spatial reasoning and absent-target rejection comparison."
+  />
+</Figure>
 
-$$
-\int_a^b f(x) dx
-$$
+<div class="text-justify">
+With purely relational prompts (“left/middle/right”), OBEYED-VLA’s cross-view grounding disambiguates partially visible objects, driving large gains over Pi-0/FAST. Base-view anchors keep wrist-view grounding from drifting to the most salient blob, so spatial picks stay reliably correct.
+</div>
 
-## Tables
+### Absent-Target Rejection
 
-Add simple tables using [GitHub Flavored Markdown syntax](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/organizing-information-with-tables):
+<div class="not-prose flex flex-col items-center space-y-2">
+  <Video
+    fullWidth
+    leftLabel="Original Observations"
+    rightLabel="Perceptually Grounded Observations"
+    src="/qualitative/ours_absent_obj_side_by_side.mp4"
+  />
+  <p class="text-center text-base">''pick up the mustard bottle and place it in the bin''</p>
+</div>
 
-| Model | Accuracy | F1 score | Training time (hours) |
-| :--- | :---: | :---: | :---: |
-| BERT-base | 0.89 | 0.87 | 4.5 |
-| RoBERTa-large | 0.92 | 0.91 | 7.2 |
-| DistilBERT | 0.86 | 0.84 | 2.1 |
-| XLNet | 0.90 | 0.89 | 6.8 |
+<Figure>
+  <Picture
+    slot="figure"
+    src="../assets/fig_neg_prompt_heatmaps.pdf"
+    alt="Absent-target rejection comparison."
+  />
+</Figure>
+
+<div class="text-justify">
+When the instruction is infeasible (target missing), OBEYED-VLA almost always abstains. The above heatmaps from OBEYED Pi-0 and OBEVED Pi-0 FAST confirm this by showing near-zero pick-up rates on off-diagonal requested versus shown pairs, while end-to-end baselines retain large off-diagonal mass and still grasp more than 75 percent of the time.
+</div>
+
+### Background Appearance Shift
+
+<div class="not-prose flex flex-col items-center space-y-2">
+  <Video
+    fullWidth
+    leftLabel="Original Observations"
+    rightLabel="Perceptually Grounded Observations"
+    src="/qualitative/ours_bg_change_side_by_side.mp4"
+  />
+  <p class="text-center text-base">''place the instructed item despite background shift''</p>
+</div>
+
+<Figure>
+  <Picture
+    slot="figure"
+    src="../assets/background_changes_chart.pdf"
+    alt="Performance under background appearance shifts."
+  />
+</Figure>
+
+<div class="text-justify">
+Swapping tablecloths, backdrops, or both barely dents OBEYED-VLA, while baselines lose 10 to 30 points. The grounded inputs suppress background textures, so the policy does not overfit to new colors or patterns. Appearance shifts are handled by filtering out background variation rather than relying on the policy to generalize from action tuning alone.
+</div>
+
+### Unseen Objects in Cluttered Scenes
+
+<div class="not-prose grid gap-6 md:grid-cols-2 md:items-end">
+  <div class="flex justify-center">
+    <Carousel slideGap="0.1rem" class="w-full">
+      <CarouselSlide>
+        <Video
+          fullWidth
+          leftLabel="Original Observations"
+          rightLabel="Perceptually Grounded Observations"
+          src="/qualitative/ours_unseen_obj1_side_by_side.mp4"
+        />
+        <p class="mt-2 text-center text-base">''place the white bottle in the bin''</p>
+      </CarouselSlide>
+      <CarouselSlide>
+        <Video
+          fullWidth
+          leftLabel="Original Observations"
+          rightLabel="Perceptually Grounded Observations"
+          src="/qualitative/ours_unseen_obj2_side_by_side.mp4"
+        />
+        <p class="mt-2 text-center text-base">''place the orange coffee bag in the bin''</p>
+      </CarouselSlide>
+      <CarouselSlide>
+        <Video
+          fullWidth
+          leftLabel="Original Observations"
+          rightLabel="Perceptually Grounded Observations"
+          src="/qualitative/ours_unseen_obj3_side_by_side.mp4"
+        />
+        <p class="mt-2 text-center text-base">''place the yellow oil bottle in the bin''</p>
+      </CarouselSlide>
+      <CarouselSlide>
+        <Video
+          fullWidth
+          leftLabel="Original Observations"
+          rightLabel="Perceptually Grounded Observations"
+          src="/qualitative/ours_unseen_obj4_side_by_side.mp4"
+        />
+        <p class="mt-2 text-center text-base">''place the hoisin sauce bottle in the bin''</p>
+      </CarouselSlide>
+      <CarouselSlide>
+        <Video
+          fullWidth
+          leftLabel="Original Observations"
+          rightLabel="Perceptually Grounded Observations"
+          src="/qualitative/ours_unseen_obj5_side_by_side.mp4"
+        />
+        <p class="mt-2 text-center text-base">''place the relish bottle in the bin''</p>
+      </CarouselSlide>
+    </Carousel>
+  </div>
+  <div class="flex justify-center">
+    <Figure>
+      <Picture
+        slot="figure"
+        src="../assets/fig_unseen_objects_bars.pdf"
+        alt="Comparison on unseen objects in cluttered scenes."
+        maxHeightClass="max-h-[24rem] object-contain"
+      />
+    </Figure>
+  </div>
+</div>
+
+<div class="text-justify">
+  Even when every item is novel, OBEYED-VLA keeps success high while baselines crater. Geometry-aware grounding decouples grasp decisions from texture and color priors learned on seen objects, so novel bottles and bags still map cleanly to instructions, enabling zero-shot object generalization without synthetic clutter data.
+</div>
+
 
 ## BibTeX citation
 
-Displaying your BibTeX citation in a code block makes it easy to copy and paste.
-
 ```bibtex
-@misc{roman2024academic,
-  author = "{Roman Hauksson}",
-  title = "Academic Project Page Template",
-  year = "2024",
-  howpublished = "\url{https://research-template.roman.technology}",
+@misc{obeyedvla,
+  author = "{Khoa Vo and Taisei Hanyu and Yuki Ikebe and Trong Thang Pham and Nhat Chung and Minh Nhat Vu and Duy Nguyen Ho Minh and Anh Nguyen and Anthony Gunderman and Chase Rainwater and Ngan Le}",
+  title = "Clutter-Resistant Vision–Language–Action Models through Object-Centric and Geometry Grounding",
+  year = "2025",
 }
 ```

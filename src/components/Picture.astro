@@ -7,9 +7,17 @@ interface Props {
   alt: string;
   priority?: boolean;
   invertInDarkMode?: boolean;
+  /** Optional Tailwind class to constrain max height, e.g., "max-h-[24rem]" */
+  maxHeightClass?: string;
 }
 
-const { src, alt, priority = false, invertInDarkMode = false } = Astro.props;
+const {
+  src,
+  alt,
+  priority = false,
+  invertInDarkMode = false,
+  maxHeightClass,
+} = Astro.props;
 
 let image: ImageMetadata;
 
@@ -21,7 +29,7 @@ if (typeof src === "string") {
 ---
 
 <AstroPicture
-  class={`rounded-lg max-h-[35rem] w-full ${invertInDarkMode ? "dark:invert" : ""}`}
+  class={`w-full h-auto ${invertInDarkMode ? "dark:invert" : ""} ${maxHeightClass ?? ""}`}
   src={image}
   alt={alt}
   layout="constrained"

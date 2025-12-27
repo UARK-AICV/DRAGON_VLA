@@ -6,15 +6,29 @@ interface Props {
 }
 
 const { notes } = Astro.props;
+const firstLine = notes.slice(0, 2);
+const remaining = notes.slice(2);
 ---
 
-<div class="text-center text-sm">
-  {
-    // prettier-ignore
-    notes.map((note, index, array) =>
-      <span>
-        <sup>{note.symbol}</sup>{note.text}{index < array.length - 1 ? "," : ""}
+<div class="text-center text-sm leading-tight space-y-1">
+  <div class="flex flex-wrap justify-center gap-x-2">
+    {firstLine.map((note, index, array) => (
+      <span class="whitespace-nowrap">
+        <sup>{note.symbol}</sup>
+        {note.text}
+        {index < array.length - 1 ? "," : ""}
       </span>
-    )
-  }
+    ))}
+  </div>
+  {remaining.length > 0 && (
+    <div class="flex flex-wrap justify-center gap-x-2">
+      {remaining.map((note, index, array) => (
+        <span class="whitespace-nowrap">
+          <sup>{note.symbol}</sup>
+          {note.text}
+          {index < array.length - 1 ? "," : ""}
+        </span>
+      ))}
+    </div>
+  )}
 </div>

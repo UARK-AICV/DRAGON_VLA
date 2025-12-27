@@ -2,6 +2,10 @@
 import type { HTMLAttributes } from "astro/types";
 interface Props extends HTMLAttributes<"video"> {
   src: string;
+  fullWidth?: boolean;
+  leftLabel?: string;
+  rightLabel?: string;
+  maxWidthClass?: string;
 }
 
 const {
@@ -11,16 +15,44 @@ const {
   playsinline = true,
   muted = true,
   autoplay = true,
+  fullWidth = false,
+  leftLabel,
+  rightLabel,
+  maxWidthClass,
   ...videoProps
 } = Astro.props;
+
+const wrapperWidth =
+  maxWidthClass ?? (fullWidth ? "max-w-[50%]" : "max-w-[50%]");
 ---
 
-<video
-  class="aspect-video h-auto w-full rounded-lg"
-  src={src}
-  controls={controls}
-  loop={loop}
-  playsinline={playsinline}
-  muted={muted}
-  autoplay={autoplay}
-  {...videoProps}></video>
+<div class={`mx-auto w-full ${wrapperWidth}`}>
+  {(leftLabel || rightLabel) && (
+    <div class="mb-1 flex w-full px-2 text-center text-black">
+      {leftLabel && (
+        <div class="flex w-1/2 justify-center">
+          <span class="max-w-[95%] text-[0.65rem] font-semibold leading-tight md:text-xs">
+            {leftLabel}
+          </span>
+        </div>
+      )}
+      {rightLabel && (
+        <div class="flex w-1/2 justify-center">
+          <span class="max-w-[95%] text-center text-[0.65rem] font-semibold leading-tight md:text-xs">
+            {rightLabel}
+          </span>
+        </div>
+      )}
+    </div>
+  )}
+
+  <video
+    class="h-auto w-full"
+    src={src}
+    controls={controls}
+    loop={loop}
+    playsinline={playsinline}
+    muted={muted}
+    autoplay={autoplay}
+    {...videoProps}></video>
+</div>

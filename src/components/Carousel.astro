@@ -3,6 +3,12 @@ import { Icon } from "astro-icon/components";
 import { parseHTML } from "linkedom";
 // https://cassidysmith.dev/posts/modify-astro-slot-children
 
+interface Props {
+  slideGap?: string;
+}
+
+const { slideGap = "2rem" } = Astro.props as Props;
+
 const html = await Astro.slots.render("default");
 const { document } = parseHTML(html);
 const children = Array.from(document.children);
@@ -15,7 +21,7 @@ children.forEach((child, index) => {
 const slidesHtml = children.map((child) => child.outerHTML).join("");
 ---
 
-<div class="carousel-wrapper">
+<div class="carousel-wrapper" style={`--slide-gap: ${slideGap}`}>
   <div class="not-prose mb-4 flex items-center justify-center">
     <button
       class="navigation-button prev-button h-[3rem] w-[3rem] cursor-pointer content-center disabled:cursor-not-allowed disabled:opacity-50 active:[&>svg]:scale-none!"
@@ -47,10 +53,10 @@ const slidesHtml = children.map((child) => child.outerHTML).join("");
     >
   </div>
   <div
-    class="carousel-viewport mx-[calc(var(--slide-gap)/-2)] w-[calc(var(--actual-text-width)+var(--slide-gap))]"
+    class="carousel-viewport w-[var(--actual-text-width)]"
   >
     <div
-      class="carousel mx-[calc(var(--actual-inline-margin)*-1+var(--slide-gap)/2)] flex snap-x snap-mandatory scroll-pl-[calc(var(--actual-inline-margin)-var(--slide-gap)/2)] overflow-scroll px-[var(--actual-inline-margin)] [scrollbar-width:none]"
+      class="carousel flex snap-x snap-mandatory gap-[var(--slide-gap)] overflow-x-auto [scrollbar-width:none]"
     >
       <Fragment set:html={slidesHtml} />
     </div>
@@ -66,6 +72,7 @@ const slidesHtml = children.map((child) => child.outerHTML).join("");
     const carouselViewport = wrapper.querySelector(
       "div.carousel-viewport",
     ) as HTMLDivElement;
+    const carousel = wrapper.querySelector("div.carousel") as HTMLDivElement;
     const slides = wrapper.querySelectorAll(
       "div.slide",
     ) as NodeListOf<HTMLDivElement>;
@@ -84,6 +91,7 @@ const slidesHtml = children.map((child) => child.outerHTML).join("");
 
     if (
       !carouselViewport ||
+      !carousel ||
       !prevButton ||
       !nextButton ||
       slides.length === 0
@@ -92,24 +100,42 @@ const slidesHtml = children.map((child) => child.outerHTML).join("");
     }
 
     let currentIndex = 0;
+    let isProgrammatic = false;
 
     function updateButtonStates() {
-      prevButton.disabled = currentIndex === 0;
-      nextButton.disabled = currentIndex === slides.length - 1;
+      prevButton.disabled = false;
+      nextButton.disabled = false;
       paginationButtons.forEach((item, index) => {
         item.classList.toggle("active", index === currentIndex);
       });
     }
 
     function goToSlide(index: number) {
-      if (index < 0 || index >= slides.length) {
-        return;
-      }
+      if (slideViewports.length === 0) return;
 
-      slideViewports[index].scrollIntoView({
+      const wrappedIndex = ((index % slides.length) + slides.length) % slides.length;
+      currentIndex = wrappedIndex;
+
+      const target = slideViewports[wrappedIndex];
+      const offset = target.offsetLeft - carousel.offsetLeft;
+      isProgrammatic = true;
+      carousel.scrollTo({
+        left: offset,
         behavior: "smooth",
-        block: "nearest",
-        inline: "start",
+      });
+      window.setTimeout(() => {
+        isProgrammatic = false;
+      }, 350);
+      // Pause all videos and reset to start
+      // Pause and reset all videos, then play the active slide's videos
+      const allVideos = wrapper.querySelectorAll("video");
+      allVideos.forEach((video) => {
+        video.pause();
+        video.currentTime = 0;
+      });
+      const activeSlide = slideViewports[wrappedIndex];
+      activeSlide.querySelectorAll("video").forEach((video) => {
+        video.play().catch(() => {});
       });
       updateButtonStates();
     }
@@ -147,12 +173,20 @@ const slidesHtml = children.map((child) => child.outerHTML).join("");
 
         const target = mostVisible.target as HTMLElement;
         const nextIndex = Number(target.dataset.index ?? "-1");
-        if (Number.isNaN(nextIndex) || nextIndex === currentIndex) {
+        if (Number.isNaN(nextIndex)) {
           return;
         }
 
-        currentIndex = nextIndex;
-        updateButtonStates();
+        if (isProgrammatic) {
+          return;
+        }
+
+        if (nextIndex !== currentIndex) {
+          goToSlide(nextIndex);
+        } else {
+          currentIndex = nextIndex;
+          updateButtonStates();
+        }
       },
       {
         root: carouselViewport,
@@ -161,15 +195,14 @@ const slidesHtml = children.map((child) => child.outerHTML).join("");
     );
 
     slideViewports.forEach((slideViewport) => observer.observe(slideViewport));
+
+    // Initial state: play only the first slide's videos
+    goToSlide(0);
   });
 </script>
 
 <style>
   @reference "../styles/global.css";
-  :root {
-    --slide-gap: 1rem;
-  }
-
   @media (hover: none) and (pointer: coarse) {
     .navigation-button {
       display: none;
