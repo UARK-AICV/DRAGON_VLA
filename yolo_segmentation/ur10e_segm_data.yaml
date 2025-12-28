@@ -1,0 +1,20 @@
+class_map:
+  - robot_arm
+  - object
+
+sources:
+  - name: robotarm
+    image_glob: "assets/robotarm_workspace/**/images/*.jpg"
+    mask_dirname: "masks"
+    mask_ext: ".png"
+    class: robot_arm
+    instance_policy: largest
+    priority: 100
+
+  - name: objects
+    image_glob: "assets/objects_workspace/**/images/*.jpg"
+    mask_dirname: "masks"   # per-instance PNGs in the same folder
+    mask_ext: ".png"
+    class: object
+    instance_policy: largest
+    priority: 50

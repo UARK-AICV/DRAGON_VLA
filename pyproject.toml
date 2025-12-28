@@ -1,0 +1,31 @@
+[project]
+name = "ActFocus"
+version = "0.1.0"
+requires-python = "==3.10.0"
+
+dependencies = [
+  # service
+  "fastapi",
+  "uvicorn",
+  "pillow", # also in FastSAM reqs
+  "openai",
+  "matplotlib>=3.2.2",
+  "opencv-python>=4.6.0",
+  "pillow>=7.1.2",
+  "PyYAML>=5.3.1",
+  "requests>=2.23.0",
+  "scipy>=1.4.1",
+  "torch==2.5.0",
+  "torchvision==0.20.0",
+  "tqdm>=4.64.0",
+  "pandas>=1.1.4",
+  "seaborn>=0.11.0",
+  "psutil",
+  "wandb",
+  "ultralytics",
+  "timm>=1.0.19",
+  "open-clip-torch==2.24.0",
+  # Local packages (resolved via [tool.uv.sources] below)
+  "imageio>=2.37.0",
+  "lap>=0.5.12",
+]

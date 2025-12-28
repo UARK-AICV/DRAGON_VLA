@@ -1,0 +1,41 @@
+# robotarm_seg_small.yaml
+# Base recipe for small, single-class instance segmentation (no mosaic)
+task: segment
+model: weights/yolo11l-seg.pt          # start smaller on tiny data; you can swap to yolo11m/l if needed
+data: assets/ur10e_seg_var_bg_data/data-seg.yaml
+
+# I/O
+project: .                      # so outputs go to ./<name>/
+name: robotarm_seg              # Phase-1 name (Phase-2 adds suffix in code)
+
+# compute
+imgsz: 960
+batch: 16
+device: "0,1"                   # or "0"
+
+# schedule / optimization
+epochs: 40                      # Phase-1 will use this; Phase-2 sets its own
+optimizer: auto                 # let Ultralytics pick a good default (AdamW/SGD)
+lr0: 0.002
+lrf: 0.10
+weight_decay: 0.0008
+cos_lr: true
+
+# warmup
+warmup_epochs: 3
+warmup_momentum: 0.8
+warmup_bias_lr: 0.1
+
+# early stop & caching
+patience: 10
+cache: true
+
+# augmentations (no mosaic)
+mosaic: 0.0
+mixup: 0.15
+copy_paste: 0.30
+degrees: 3.0
+scale: 0.15
+shear: 0.5
+fliplr: 0.5
+flipud: 0.0
