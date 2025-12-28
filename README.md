@@ -1,6 +1,6 @@
 # OBEYED-VLA: Clutter-Resistant Vision-Language-Action Models through Object-Centric and Geometry Grounding
 
-### [Project Page](https://uark-aicv.github.io/OBEYED_VLA)
+### [[Project Page]](https://uark-aicv.github.io/OBEYED_VLA)
 
 This is the official code for the perception grounding module of OBEYED-VLA. OBEYED-VLA decouples perception from control using frozen VLM-based object-centric grounding plus masked-depth geometric grounding, then fine-tunes a VLA only on clean single-object demos.
 
