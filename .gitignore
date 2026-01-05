@@ -1,6 +1,7 @@
 # Large checkpoints not tracked in repo
 Cutie/weights/*.pth
 DepthAnythingV2/checkpoints/*.pth
+T-RO/
 
 # Python cache
 __pycache__/
