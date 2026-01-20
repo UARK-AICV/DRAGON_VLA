@@ -16,7 +16,7 @@ from ultralytics import YOLO
 class YOLO11SegEngineConfig:
     def __init__(
         self,
-        weights: str = "weights/yolo11l-seg.pt",
+        weights: str = "weights/yolo11l-robotarm_obj.pt",
         device: str = "cuda",
         imgsz: int = 960,
         conf: float = 0.60,
