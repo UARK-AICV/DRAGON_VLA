@@ -1,8 +1,8 @@
-# OBEYED-VLA: Clutter-Resistant Vision-Language-Action Models through Object-Centric and Geometry Grounding
+# DRAGON-VLA: Distraction-Robust Vision-Language-Action Models through Object-Centric and Geometry Grounding
 
-### [[Project Page]](https://uark-aicv.github.io/OBEYED_VLA) [[ArXiv]](https://arxiv.org/abs/2512.22519)
+### [[Project Page]](https://uark-aicv.github.io/DRAGON_VLA/)
 
-This is the official code for the perception grounding module of OBEYED-VLA. OBEYED-VLA decouples perception from control using frozen VLM-based object-centric grounding plus masked-depth geometric grounding, then fine-tunes a VLA only on clean single-object demos.
+This is the official code for the perception grounding module of DRAGON-VLA (Distraction-Robust Action via Geometric and Object-ceNtric Grounding). DRAGON-VLA is an integrated perception–control system that improves instruction–scene alignment under visual distraction through frozen, two-stage object-centric grounding and masked relative-depth grounding. The grounded observations condition a VLA fine-tuned only on clean, single-object demonstrations.
 
 This codebase exposes two main entrypoints:
 - `perception_service_batch.py`: batch processing to generate training data (mask selection, depth, and overlays).
@@ -57,4 +57,3 @@ This codebase exposes two main entrypoints:
   uv run uvicorn perception_service_fastapi:app --host 0.0.0.0 --port 8000
   ```
 - Accepts image uploads and returns processed outputs using the same perception core.
-
