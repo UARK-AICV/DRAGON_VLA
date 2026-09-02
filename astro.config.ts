@@ -13,7 +13,7 @@ import astroExpressiveCode from "astro-expressive-code";
 // https://astro.build/config
 export default defineConfig({
   site: "https://uark-aicv.github.io",
-  base: "/OBEYED_VLA/",
+  base: "/DRAGON_VLA/",
   vite: {
     plugins: [tailwindcss()],
   },

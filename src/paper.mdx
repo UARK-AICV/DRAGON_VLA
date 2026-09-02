@@ -1,5 +1,5 @@
 ---
-title: "Clutter-Robust Vision-Language-Action Models through Object-Centric and Geometry Grounding"
+title: "Distraction-Robust Vision-Language-Action Models through Object-Centric and Geometry Grounding"
 authors:
   - name: Khoa Vo
     url: https://vhvkhoa.github.io
@@ -45,7 +45,7 @@ notes:
     text: University of Liverpool
 links:
   - name: Code
-    url: https://github.com/UARK-AICV/OBEYED_VLA
+    url: https://github.com/UARK-AICV/DRAGON_VLA
     icon: ri:github-line
   - name: arXiv
     url: "https://arxiv.org/abs/2512.22519"
@@ -58,7 +58,7 @@ theme: light
 favicon: favicon.svg
 
 # These keys are optional. If a link to your project page is in a Google search result, text message, or social media post, it will often appear as a "link preview card" based on its title, description, favicon, and thumbnail. After you publish your page, you can double check that these previews look right using [this tool](https://linkpreview.xyz/)
-description: OBEYED-VLA improves clutter-robust robotic manipulation by grounding vision-language-action models with task-conditioned object-centric and geometry-aware observations.
+description: DRAGON-VLA improves distraction-robust robotic manipulation through task-conditioned object-centric and geometry-aware grounding for vision-language-action models.
 thumbnail: screenshot-light.png
 ---
 
@@ -84,9 +84,9 @@ import { Comparison } from "./components/Comparison.tsx";
 <div class="rounded-xl border border-zinc-200 bg-white/70 px-5 py-4 shadow-sm ring-1 ring-zinc-100 dark:border-zinc-700 dark:bg-zinc-900/70 dark:ring-zinc-800">
   <h2 class="mb-2 text-xl font-semibold">TL;DR</h2>
   <ul class="list-disc space-y-1 pl-5 text-justify">
-    <li><strong>Problem:</strong> End-to-end VLAs often lose reliable language–vision grounding in real clutter (distractors, absent targets, background shifts, unseen objects).</li>
-    <li><strong>Idea:</strong> OBEYED-VLA decouples perception from control using frozen VLM-based object-centric grounding plus masked-depth geometric grounding, then fine-tunes a VLA only on clean single-object demos.</li>
-    <li><strong>Results:</strong> In real-world scenarios, OBEYED-VLA boosts success across clutter, absent-target, OOD backgrounds, and unseen-object scenes; ablations confirm both semantic grounding and depth cues are key contributors.</li>
+    <li><strong>Problem:</strong> End-to-end VLAs often lose reliable language–vision grounding under visual distraction, including competing objects, absent referents, background shifts, and unseen objects.</li>
+    <li><strong>Idea:</strong> DRAGON-VLA integrates frozen, two-stage object-centric grounding and masked relative-depth grounding with a VLA fine-tuned only on clean, single-object demonstrations.</li>
+    <li><strong>Results:</strong> DRAGON-VLA retains around 80% task success with seven distractors while the evaluated baselines fall below 10%, and achieves approximately 95% absent-target rejection. Ablations identify object-centric filtering as the main source of improvement and depth grounding as most beneficial on unseen objects.</li>
   </ul>
 </div>
 
@@ -94,11 +94,11 @@ import { Comparison } from "./components/Comparison.tsx";
 
 <div class="text-justify space-y-4">
 
-Recent Vision–Language–Action (VLA) models make strong gains by post-training large Vision–Language Models for action prediction, but most treat perception and control as a single monolithic pipeline optimized purely for action. This end-to-end setup erodes language-conditioned visual grounding: in real-world trials, policies over-grasp when the target is absent, get distracted by clutter, and overfit to background appearance, degrading performance on realistic tabletops with distractors, background shifts, and unseen objects.
+Vision–Language–Action (VLA) models adapt pretrained Vision–Language Models (VLMs) for robotic control, yet often fail to bind instructions to the correct visual evidence. Our single-object sanity check shows that state-of-the-art policies frequently grasp the visible object when the requested referent is absent. We ask whether explicit grounding can improve instruction–scene alignment under visual distraction and distribution shift without distractor-rich demonstrations or auxiliary perceptual objectives.
 
-We propose OBEYED-VLA (OBject-centric and gEometrY groundED VLA), which explicitly disentangles perceptual grounding from action reasoning. Instead of operating on raw RGB, OBEYED-VLA augments VLAs with a perception module that grounds multi-view inputs into task-conditioned, object-centric, geometry-aware observations. A VLM-based object-centric grounding stage selects task-relevant regions across camera views, and a complementary geometric grounding stage emphasizes the 3D structure of these objects over appearance. The grounded views feed a pretrained VLA policy that we fine-tune only on single-object demonstrations captured without clutter or non-target objects.
+We propose *Distraction-Robust Action via Geometric and Object-ceNtric Grounding* (DRAGON-VLA), an integrated perception–control system. Its two-stage object-centric module uses an off-the-shelf VLM to select task-relevant segmentation proposals in a base view and semantically match the same objects in a wrist view. A geometric module converts the selected regions into masked monocular relative-depth observations that preserve shape and spatial layout while suppressing appearance, background, and distractors. These grounded multi-view inputs condition a pretrained VLA fine-tuned only on clean, single-object demonstrations. DRAGON-VLA thus provides a task-aware, calibration-free interface combining base-view anchoring, semantic cross-view matching, and explicit depth grounding without additional high-level grounding supervision.
 
-On a real-world UR10e tabletop, OBEYED-VLA markedly improves robustness over strong VLA baselines across four challenging regimes and multiple difficulty levels: distractor objects, absent-target rejection, background appearance shifts, and cluttered manipulation of unseen objects. Ablations show both semantic and geometry-aware grounding are critical. Making perception an explicit, object-centric component strengthens and generalizes VLA-based robotic manipulation.
+On a real-world UR10e tabletop setup, DRAGON-VLA outperforms strong VLA baselines under competing distractors, absent referents requiring abstention, background shifts, and held-out object categories. With seven distractors, the grounded policies retain around 80% task success while the baselines fall below 10%; they also achieve approximately 95% absent-target rejection. Ablations show that object-centric filtering accounts for the largest gains, while masked relative-depth inputs provide their clearest additional benefit on unseen objects. These results support explicit perception grounding as an effective systems intervention for referentially reliable VLA manipulation. Physical clutter requiring obstacle-aware motion and interaction remains outside scope.
 
 </div>
 
@@ -108,19 +108,19 @@ On a real-world UR10e tabletop, OBEYED-VLA markedly improves robustness over str
   <Picture
     slot="figure"
     src="../assets/architecture.pdf"
-    alt="OBEYED-VLA architecture showing perception grounding and action policy."
+    alt="DRAGON-VLA architecture showing perception grounding and action policy."
   />
 </Figure>
 
 <div class="text-justify space-y-4">
-We take synchronized base- and wrist-view RGB observations and first run a real-time segmentation model to obtain object-level mask proposals in each view. Using set-of-mark prompting, a VLM parses the instruction, selects the task-relevant masks in the base view, and then matches those objects to the corresponding wrist-view regions via reference-crop–conditioned cross-view grounding. We use the selected masks to suppress all irrelevant pixels, producing object-centric views that retain only instruction-relevant objects (and the bin/robot as needed). Next, we estimate depth from each view and apply the same masks to form geometry-focused (masked-depth) observations that emphasize 3D structure while discarding appearance cues. These perceptually grounded views, together with the language instruction and proprioception, are fed into a pretrained VLA backbone that we fine-tune on clean single-object demonstrations while keeping the grounding modules frozen.
+DRAGON-VLA takes synchronized base- and wrist-view RGB observations and first uses a real-time segmentation model to generate object-mask proposals. Given the instruction, an off-the-shelf VLM selects task-relevant proposals in the base view and semantically matches the same objects in the wrist view using base-view reference crops. The selected masks suppress irrelevant regions in both views. A geometric grounding module then applies these masks to monocular relative-depth estimates, producing task-conditioned observations that preserve object shape and spatial layout while reducing appearance, background, and distractor cues. These grounded observations, together with the instruction and robot proprioception, condition a pretrained VLA fine-tuned only on clean, single-object demonstrations. The perception grounding module remains frozen, and the interface does not require camera calibration.
 
 </div>
 
 
 ## Experiments
 
-### Cluttered Scenes with Distractor Objects
+### Visually Distracting Scenes with Distractor Objects
 
 <Carousel slideGap="0.1rem">
   <CarouselSlide>
@@ -174,13 +174,13 @@ We take synchronized base- and wrist-view RGB observations and first run a real-
   <Picture
     slot="figure"
     src="../assets/plot_id_distractors.pdf"
-    alt="Comparison of performance in cluttered scenes with distractors."
+    alt="Comparison of performance under visual distraction from competing objects."
     maxHeightClass="max-h-[18rem] object-contain"
   />
 </Figure>
 
 <div class="text-justify">
-OBEYED-VLA consistently maintains attention on the instructed target even with 1 to 7 distractors, whereas end-to-end VLA baselines are often diverted to task-irrelevant objects and degrade sharply as clutter increases. With object- and geometry-grounded inputs, OBEYED-VLA sustains roughly 80 to 90 percent success under heavy clutter, indicating that explicit perceptual grounding is the key driver of reliable language following rather than additional action-centric tuning.
+DRAGON-VLA consistently maintains attention on the instructed target even with 1 to 7 distractors, whereas end-to-end VLA baselines are often diverted to task-irrelevant objects and degrade sharply as visual distraction increases. With object- and geometry-grounded inputs, DRAGON-VLA sustains roughly 80 to 90 percent success with multiple distractors, indicating that explicit perceptual grounding is the key driver of reliable language following rather than additional action-centric tuning.
 </div>
 
 ### Spatial Reasoning
@@ -231,7 +231,7 @@ OBEYED-VLA consistently maintains attention on the instructed target even with 1
 </Figure>
 
 <div class="text-justify">
-With purely relational prompts (“left/middle/right”), OBEYED-VLA’s cross-view grounding disambiguates partially visible objects, driving large gains over Pi-0/FAST. Base-view anchors keep wrist-view grounding from drifting to the most salient blob, so spatial picks stay reliably correct.
+With purely relational prompts (“left/middle/right”), DRAGON-VLA’s cross-view grounding disambiguates partially visible objects, driving large gains over Pi-0/FAST. Base-view anchors keep wrist-view grounding from drifting to the most salient blob, so spatial picks stay reliably correct.
 </div>
 
 ### Absent-Target Rejection
@@ -255,7 +255,7 @@ With purely relational prompts (“left/middle/right”), OBEYED-VLA’s cross-v
 </Figure>
 
 <div class="text-justify">
-When the instruction is infeasible (target missing), OBEYED-VLA almost always abstains. The above heatmaps from OBEYED Pi-0 and OBEVED Pi-0 FAST confirm this by showing near-zero pick-up rates on off-diagonal requested versus shown pairs, while end-to-end baselines retain large off-diagonal mass and still grasp more than 75 percent of the time.
+When the instruction is infeasible (target missing), DRAGON-VLA almost always abstains. The heatmaps for DRAGON Pi-0 and DRAGON Pi-0 FAST show near-zero pick-up rates on off-diagonal requested-versus-shown pairs, while end-to-end baselines retain large off-diagonal mass and still grasp more than 75 percent of the time.
 </div>
 
 ### Background Appearance Shift
@@ -279,10 +279,10 @@ When the instruction is infeasible (target missing), OBEYED-VLA almost always ab
 </Figure>
 
 <div class="text-justify">
-Swapping tablecloths, backdrops, or both barely dents OBEYED-VLA, while baselines lose 10 to 30 points. The grounded inputs suppress background textures, so the policy does not overfit to new colors or patterns. Appearance shifts are handled by filtering out background variation rather than relying on the policy to generalize from action tuning alone.
+Swapping tablecloths, backdrops, or both barely dents DRAGON-VLA, while baselines lose 10 to 30 points. The grounded inputs suppress background textures, so the policy does not overfit to new colors or patterns. Appearance shifts are handled by filtering out background variation rather than relying on the policy to generalize from action tuning alone.
 </div>
 
-### Unseen Objects in Cluttered Scenes
+### Unseen Objects under Visual Distraction
 
 <div class="not-prose grid gap-6 md:grid-cols-2 md:items-end">
   <div class="flex justify-center">
@@ -339,7 +339,7 @@ Swapping tablecloths, backdrops, or both barely dents OBEYED-VLA, while baseline
       <Picture
         slot="figure"
         src="../assets/fig_unseen_objects_bars.pdf"
-        alt="Comparison on unseen objects in cluttered scenes."
+        alt="Comparison on unseen objects under visual distraction."
         maxHeightClass="max-h-[24rem] object-contain"
       />
     </Figure>
@@ -347,16 +347,16 @@ Swapping tablecloths, backdrops, or both barely dents OBEYED-VLA, while baseline
 </div>
 
 <div class="text-justify">
-  Even when every item is novel, OBEYED-VLA keeps success high while baselines crater. Geometry-aware grounding decouples grasp decisions from texture and color priors learned on seen objects, so novel bottles and bags still map cleanly to instructions, enabling zero-shot object generalization without synthetic clutter data.
+  Even when every item is novel, DRAGON-VLA keeps success high while baselines crater. Geometry-aware grounding decouples grasp decisions from texture and color priors learned on seen objects, so novel bottles and bags still map cleanly to instructions, enabling zero-shot object generalization without synthetic distractor data.
 </div>
 
 
 ## BibTeX citation
 
 ```bibtex
-@misc{obeyedvla,
+@misc{dragonvla,
   author = "{Khoa Vo and Taisei Hanyu and Yuki Ikebe and Trong Thang Pham and Nhat Chung and Minh Nhat Vu and Duy Nguyen Ho Minh and Anh Nguyen and Anthony Gunderman and Chase Rainwater and Ngan Le}",
-  title = "Clutter-Robust Vision-Language-Action Models through Object-Centric and Geometry Grounding",
+  title = "Distraction-Robust Vision-Language-Action Models through Object-Centric and Geometry Grounding",
   year = "2025",
   eprint = "2512.22519",
   archivePrefix = "arXiv",
